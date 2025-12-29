@@ -226,35 +226,99 @@
     <script>
         // Load popular careers on homepage
         async function loadPopularCareers() {
-            try {
-                const response = await fetch('https://api.example.com/popular-careers'); // Replace with actual API
-                const careers = await response.json();
-                
-                const container = document.getElementById('popular-careers');
-                if (container) {
-                    container.innerHTML = careers.slice(0, 3).map(career => `
-                        <div class="col-md-4">
-                            <div class="card h-100 shadow-sm">
-                                <div class="card-body">
-                                    <h5 class="card-title">${career.title}</h5>
-                                    <p class="card-text text-muted small">${career.description.substring(0, 100)}...</p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span class="badge bg-success">$${career.salary}/yr</span>
-                                        <a href="careers.html?id=${career.id}" class="btn btn-sm btn-outline-primary">
-                                            Learn More
-                                        </a>
+        try {
+            // Instead of fetching from external API, load from Firestore
+            if (AppState.currentUser) {
+                try {
+                    const careersSnapshot = await FirebaseServices.db
+                        .collection('careers')
+                        .limit(3)
+                        .get();
+                    
+                    const container = document.getElementById('popular-careers');
+                    if (container && !careersSnapshot.empty) {
+                        const careers = careersSnapshot.docs.map(doc => ({
+                            id: doc.id,
+                            ...doc.data()
+                        }));
+                        
+                        container.innerHTML = careers.map(career => `
+                            <div class="col-md-4">
+                                <div class="card h-100 shadow-sm">
+                                    <div class="card-body">
+                                        <h5 class="card-title">${career.title}</h5>
+                                        <p class="card-text text-muted small">
+                                            ${career.description ? career.description.substring(0, 100) + '...' : 'No description available'}
+                                        </p>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="badge bg-success">
+                                                $${career.salaryRange?.avg ? career.salaryRange.avg.toLocaleString() : 'N/A'}/yr
+                                            </span>
+                                            <a href="careers.html?id=${career.id}" class="btn btn-sm btn-outline-primary">
+                                                Learn More
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    `).join('');
+                        `).join('');
+                    }
+                } catch (firebaseError) {
+                    console.error('Firebase error:', firebaseError);
+                    showSampleCareers();
                 }
-            } catch (error) {
-                console.error('Error loading popular careers:', error);
+            } else {
+                // Show sample careers for non-logged in users
+                showSampleCareers();
             }
+        } catch (error) {
+            console.error('Error loading popular careers:', error);
+            showSampleCareers();
         }
-        
-        document.addEventListener('DOMContentLoaded', loadPopularCareers);
+    }
+
+    function showSampleCareers() {
+        const container = document.getElementById('popular-careers');
+        if (container) {
+            const sampleCareers = [
+                {
+                    id: 'sample1',
+                    title: 'Software Developer',
+                    description: 'Design, develop, and test software applications and systems.',
+                    salary: '90,000'
+                },
+                {
+                    id: 'sample2',
+                    title: 'Data Scientist',
+                    description: 'Analyze and interpret complex data to help organizations make decisions.',
+                    salary: '110,000'
+                },
+                {
+                    id: 'sample3',
+                    title: 'Healthcare Administrator',
+                    description: 'Manage healthcare facilities and ensure quality patient care services.',
+                    salary: '85,000'
+                }
+            ];
+            
+            container.innerHTML = sampleCareers.map(career => `
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">${career.title}</h5>
+                            <p class="card-text text-muted small">${career.description}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-success">$${career.salary}/yr</span>
+                                <a href="careers.html" class="btn btn-sm btn-outline-primary">
+                                    Learn More
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+    }
     </script>
 </body>
 </html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Guide - Explore Careers</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/custom.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-compass me-2"></i>
+                CareerGuide
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="careers.html">Careers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="assessment.html">Assessment</a>
+                    </li>
+                    
+                    <!-- Non-auth only -->
+                    <li class="nav-item non-auth-only">
+                        <a class="nav-link" href="auth.html">Login</a>
+                    </li>
+                    <li class="nav-item non-auth-only">
+                        <a class="btn btn-outline-light ms-2" href="auth.html?tab=signup">Sign Up</a>
+                    </li>
+                    
+                    <!-- Auth only -->
+                    <li class="nav-item dropdown auth-only">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i>
+                            <span id="user-info"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="dashboard.html">Dashboard</a></li>
+                            <li><a class="dropdown-item" href="profile.html">My Profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" id="logout-btn">Logout</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <button class="btn btn-link nav-link" id="theme-toggle">
+                            <i class="bi bi-moon"></i>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Careers Header -->
+    <div class="container-fluid py-4 bg-light">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="fw-bold">Explore Careers</h1>
+                    <p class="text-muted">Discover career paths that match your interests</p>
+                </div>
+                <div>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#filterModal">
+                        <i class="bi bi-funnel me-2"></i>Filters
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters Bar -->
+    <div class="container py-3 border-bottom">
+        <div class="row">
+            <div class="col-md-8">
+                <div id="active-filters" class="mb-2">
+                    <!-- Active filters will appear here -->
+                </div>
+                
+                <div class="input-group">
+                    <span class="input-group-text bg-white">
+                        <i class="bi bi-search"></i>
+                    </span>
+                    <input type="text" class="form-control" id="career-search" placeholder="Search careers...">
+                    <button class="btn btn-outline-secondary" id="clear-filters" type="button">
+                        Clear All
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-4 mt-3 mt-md-0">
+                <div class="d-flex gap-2">
+                    <select class="form-select" id="sort-by">
+                        <option value="name">Sort by Name</option>
+                        <option value="salary-high">Salary (High to Low)</option>
+                        <option value="salary-low">Salary (Low to High)</option>
+                        <option value="demand">Demand</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Careers Grid -->
+    <div class="container py-4">
+        <div class="row g-4" id="careers-container">
+            <!-- Careers will be loaded here -->
+        </div>
+        
+        <!-- Pagination -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item">
+                            <button class="page-link" id="prev-page" disabled>Previous</button>
+                        </li>
+                        <li class="page-item">
+                            <span class="page-link" id="page-info">Page 1 of 1</span>
+                        </li>
+                        <li class="page-item">
+                            <button class="page-link" id="next-page" disabled>Next</button>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Modal -->
+    <div class="modal fade" id="filterModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Filter Careers</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Category Filter -->
+                    <div class="mb-4">
+                        <h6>Category</h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button class="btn btn-outline-primary filter-btn" data-filter="category" data-value="Technology">
+                                Technology
+                            </button>
+                            <button class="btn btn-outline-primary filter-btn" data-filter="category" data-value="Healthcare">
+                                Healthcare
+                            </button>
+                            <button class="btn btn-outline-primary filter-btn" data-filter="category" data-value="Business">
+                                Business
+                            </button>
+                            <button class="btn btn-outline-primary filter-btn" data-filter="category" data-value="Engineering">
+                                Engineering
+                            </button>
+                            <button class="btn btn-outline-primary filter-btn" data-filter="category" data-value="Education">
+                                Education
+                            </button>
+                            <button class="btn btn-outline-primary filter-btn" data-filter="category" data-value="Arts">
+                                Arts
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Salary Filter -->
+                    <div class="mb-4">
+                        <h6>Salary Range</h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button class="btn btn-outline-success filter-btn" data-filter="salary" data-value="low">
+                                Under $40k
+                            </button>
+                            <button class="btn btn-outline-success filter-btn" data-filter="salary" data-value="medium">
+                                $40k - $80k
+                            </button>
+                            <button class="btn btn-outline-success filter-btn" data-filter="salary" data-value="high">
+                                Over $80k
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Education Filter -->
+                    <div class="mb-4">
+                        <h6>Education Level</h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button class="btn btn-outline-info filter-btn" data-filter="education" data-value="High School">
+                                High School
+                            </button>
+                            <button class="btn btn-outline-info filter-btn" data-filter="education" data-value="Associate">
+                                Associate
+                            </button>
+                            <button class="btn btn-outline-info filter-btn" data-filter="education" data-value="Bachelor">
+                                Bachelor's
+                            </button>
+                            <button class="btn btn-outline-info filter-btn" data-filter="education" data-value="Master">
+                                Master's
+                            </button>
+                            <button class="btn btn-outline-info filter-btn" data-filter="education" data-value="Doctorate">
+                                Doctorate
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- RIASEC Filter -->
+                    <div class="mb-4">
+                        <h6>RIASEC Types</h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            <button class="btn btn-outline-warning filter-btn" data-filter="riasec" data-value="R">
+                                Realistic
+                            </button>
+                            <button class="btn btn-outline-warning filter-btn" data-filter="riasec" data-value="I">
+                                Investigative
+                            </button>
+                            <button class="btn btn-outline-warning filter-btn" data-filter="riasec" data-value="A">
+                                Artistic
+                            </button>
+                            <button class="btn btn-outline-warning filter-btn" data-filter="riasec" data-value="S">
+                                Social
+                            </button>
+                            <button class="btn btn-outline-warning filter-btn" data-filter="riasec" data-value="E">
+                                Enterprising
+                            </button>
+                            <button class="btn btn-outline-warning filter-btn" data-filter="riasec" data-value="C">
+                                Conventional
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Apply Filters</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="fw-bold mb-3">CareerGuide</h5>
+                    <p>Your trusted partner in career discovery and guidance.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0">&copy; 2024 Career Guidance System. Academic Project.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Firebase and App Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/careers.js"></script>
+    
+    <script>
+        // Initialize careers manager
+        let careersManager;
+        document.addEventListener('DOMContentLoaded', function() {
+            careersManager = new CareersManager();
+        });
+    </script>
+</body>
+</html>
