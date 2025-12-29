@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Guidance System - Home</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/custom.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-analytics-compat.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="bi bi-compass me-2"></i>
+                CareerGuide
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="careers.html">Careers</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="assessment.html">Assessment</a>
+                    </li>
+                    
+                    <!-- Non-auth only -->
+                    <li class="nav-item non-auth-only">
+                        <a class="nav-link" href="auth.html">Login</a>
+                    </li>
+                    <li class="nav-item non-auth-only">
+                        <a class="btn btn-outline-light ms-2" href="auth.html?tab=signup">Sign Up</a>
+                    </li>
+                    
+                    <!-- Auth only -->
+                    <li class="nav-item dropdown auth-only">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i>
+                            <span id="user-info"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="dashboard.html">Dashboard</a></li>
+                            <li><a class="dropdown-item" href="profile.html">My Profile</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" id="logout-btn">Logout</a></li>
+                        </ul>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <button class="btn btn-link nav-link" id="theme-toggle">
+                            <i class="bi bi-moon"></i>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section bg-gradient-primary text-white py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold mb-4">Find Your Perfect Career Path</h1>
+                    <p class="lead mb-4">
+                        Discover careers that match your personality, skills, and interests with our 
+                        intelligent career guidance system.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a href="assessment.html" class="btn btn-light btn-lg">
+                            <i class="bi bi-clipboard-check me-2"></i> Take Assessment
+                        </a>
+                        <a href="careers.html" class="btn btn-outline-light btn-lg">
+                            <i class="bi bi-search me-2"></i> Explore Careers
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" 
+                         alt="Career Guidance" class="img-fluid rounded shadow">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">How It Works</h2>
+                <p class="text-muted">Three simple steps to your dream career</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm h-100 text-center p-4">
+                        <div class="feature-icon mx-auto mb-3">
+                            <i class="bi bi-clipboard-data display-4 text-primary"></i>
+                        </div>
+                        <h4>Take Assessment</h4>
+                        <p>Complete our scientific career assessment based on RIASEC model to discover your interests.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm h-100 text-center p-4">
+                        <div class="feature-icon mx-auto mb-3">
+                            <i class="bi bi-graph-up display-4 text-primary"></i>
+                        </div>
+                        <h4>Get Matches</h4>
+                        <p>Receive personalized career recommendations based on your assessment results.</p>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="card border-0 shadow-sm h-100 text-center p-4">
+                        <div class="feature-icon mx-auto mb-3">
+                            <i class="bi bi-book display-4 text-primary"></i>
+                        </div>
+                        <h4>Explore Careers</h4>
+                        <p>Access detailed information about each career, including requirements, salary, and pathways.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Careers -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h2 class="fw-bold">Popular Careers</h2>
+                    <p class="text-muted">Explore trending career paths</p>
+                </div>
+                <a href="careers.html" class="btn btn-outline-primary">View All Careers</a>
+            </div>
+            
+            <div class="row g-4" id="popular-careers">
+                <!-- Popular careers will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-5 bg-primary text-white">
+        <div class="container text-center">
+            <h2 class="fw-bold mb-4">Ready to Discover Your Career Path?</h2>
+            <p class="lead mb-4">Join thousands of users who found their perfect career match.</p>
+            <a href="auth.html?tab=signup" class="btn btn-light btn-lg">
+                <i class="bi bi-person-plus me-2"></i> Get Started Free
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5 class="fw-bold mb-3">CareerGuide</h5>
+                    <p>Your trusted partner in career discovery and guidance.</p>
+                </div>
+                <div class="col-md-2">
+                    <h6>Quick Links</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="index.html" class="text-white-50 text-decoration-none">Home</a></li>
+                        <li><a href="careers.html" class="text-white-50 text-decoration-none">Careers</a></li>
+                        <li><a href="assessment.html" class="text-white-50 text-decoration-none">Assessment</a></li>
+                        <li><a href="auth.html" class="text-white-50 text-decoration-none">Login</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h6>Resources</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white-50 text-decoration-none">Career Tips</a></li>
+                        <li><a href="#" class="text-white-50 text-decoration-none">Success Stories</a></li>
+                        <li><a href="#" class="text-white-50 text-decoration-none">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h6>Contact</h6>
+                    <p class="text-white-50">Email: support@careerguide.com</p>
+                    <p class="text-white-50">Phone: (123) 456-7890</p>
+                </div>
+            </div>
+            <hr class="my-4 bg-white-50">
+            <div class="text-center text-white-50">
+                <p>&copy; 2024 Career Guidance System. Academic Project.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Firebase and App Scripts -->
+    <script src="js/firebase-config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    
+    <script>
+        // Load popular careers on homepage
+        async function loadPopularCareers() {
+            try {
+                const response = await fetch('https://api.example.com/popular-careers'); // Replace with actual API
+                const careers = await response.json();
+                
+                const container = document.getElementById('popular-careers');
+                if (container) {
+                    container.innerHTML = careers.slice(0, 3).map(career => `
+                        <div class="col-md-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title">${career.title}</h5>
+                                    <p class="card-text text-muted small">${career.description.substring(0, 100)}...</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="badge bg-success">$${career.salary}/yr</span>
+                                        <a href="careers.html?id=${career.id}" class="btn btn-sm btn-outline-primary">
+                                            Learn More
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (error) {
+                console.error('Error loading popular careers:', error);
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', loadPopularCareers);
+    </script>
+</body>
+</html>
