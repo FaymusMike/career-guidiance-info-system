@@ -127,28 +127,96 @@
         </div>
     </div>
 
-    <!-- Careers Grid -->
+    <!-- Careers Content -->
     <div class="container py-4">
-        <div class="row g-4" id="careers-container">
-            <!-- Careers will be loaded here -->
-        </div>
+        <!-- Tabs Navigation -->
+        <ul class="nav nav-tabs mb-4" id="careersTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="browse-tab" data-bs-toggle="tab" data-bs-target="#browse">
+                    <i class="bi bi-grid me-2"></i>Browse Careers
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="jobs-tab" data-bs-toggle="tab" data-bs-target="#jobs">
+                    <i class="bi bi-briefcase me-2"></i>Job Opportunities
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="trends-tab" data-bs-toggle="tab" data-bs-target="#trends">
+                    <i class="bi bi-graph-up me-2"></i>Market Trends
+                </button>
+            </li>
+        </ul>
         
-        <!-- Pagination -->
-        <div class="row mt-4">
-            <div class="col-12">
-                <nav aria-label="Page navigation">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item">
-                            <button class="page-link" id="prev-page" disabled>Previous</button>
-                        </li>
-                        <li class="page-item">
-                            <span class="page-link" id="page-info">Page 1 of 1</span>
-                        </li>
-                        <li class="page-item">
-                            <button class="page-link" id="next-page" disabled>Next</button>
-                        </li>
-                    </ul>
-                </nav>
+        <!-- Tabs Content -->
+        <div class="tab-content" id="careersTabsContent">
+            <!-- Browse Careers Tab -->
+            <div class="tab-pane fade show active" id="browse" role="tabpanel">
+                <div class="row g-4" id="careers-container">
+                    <div class="col-12 text-center py-5">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-3 text-muted">Loading careers...</p>
+                    </div>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item">
+                                    <button class="page-link" id="prev-page" disabled>Previous</button>
+                                </li>
+                                <li class="page-item">
+                                    <span class="page-link" id="page-info">Page 1 of 1</span>
+                                </li>
+                                <li class="page-item">
+                                    <button class="page-link" id="next-page" disabled>Next</button>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Job Opportunities Tab -->
+            <div class="tab-pane fade" id="jobs" role="tabpanel">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-0">
+                        <h5 class="mb-0"><i class="bi bi-briefcase me-2"></i>Job Opportunities</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="jobs-container">
+                            <div class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-3">Loading job opportunities...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Market Trends Tab -->
+            <div class="tab-pane fade" id="trends" role="tabpanel">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-white border-0">
+                        <h5 class="mb-0"><i class="bi bi-graph-up me-2"></i>Market Trends</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="trends-container">
+                            <div class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-3">Loading market trends...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -224,35 +292,32 @@
                             </button>
                         </div>
                     </div>
-                    
-                    <!-- RIASEC Filter -->
-                    <div class="mb-4">
-                        <h6>RIASEC Types</h6>
-                        <div class="d-flex flex-wrap gap-2">
-                            <button class="btn btn-outline-warning filter-btn" data-filter="riasec" data-value="R">
-                                Realistic
-                            </button>
-                            <button class="btn btn-outline-warning filter-btn" data-filter="riasec" data-value="I">
-                                Investigative
-                            </button>
-                            <button class="btn btn-outline-warning filter-btn" data-filter="riasec" data-value="A">
-                                Artistic
-                            </button>
-                            <button class="btn btn-outline-warning filter-btn" data-filter="riasec" data-value="S">
-                                Social
-                            </button>
-                            <button class="btn btn-outline-warning filter-btn" data-filter="riasec" data-value="E">
-                                Enterprising
-                            </button>
-                            <button class="btn btn-outline-warning filter-btn" data-filter="riasec" data-value="C">
-                                Conventional
-                            </button>
-                        </div>
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Apply Filters</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Career Details Modal -->
+    <div class="modal fade" id="careerDetailsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="careerModalTitle">Career Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="career-modal-content">
+                        <div class="text-center py-4">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-3">Loading career information...</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -276,20 +341,359 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    
     <!-- Firebase and App Scripts -->
     <script src="js/firebase-config.js"></script>
     <script src="js/auth.js"></script>
-    <script src="js/careers.js"></script>
+    <script src="js/main.js"></script>
     
     <script>
-        // Initialize careers manager
-        let careersManager;
-        document.addEventListener('DOMContentLoaded', function() {
-            careersManager = new CareersManager();
+        // Careers page specific JavaScript
+        class CareersPageManager {
+            constructor() {
+                this.onetAPI = new OnetAPIManager();
+                this.jobMarket = new JobMarketManager();
+                this.currentPage = 1;
+                this.itemsPerPage = 9;
+                this.filteredCareers = [];
+                this.currentFilters = {};
+                
+                this.init();
+            }
+            
+            async init() {
+                await this.loadCareers();
+                this.initEventListeners();
+                this.renderCareers();
+                
+                // Check URL for career ID
+                const urlParams = new URLSearchParams(window.location.search);
+                const careerId = urlParams.get('id');
+                if (careerId) {
+                    this.showCareerDetails(careerId);
+                }
+            }
+            
+            async loadCareers() {
+                try {
+                    // Load sample careers from O*NET
+                    const riasecCodes = ['R', 'I', 'A', 'S', 'E', 'C'];
+                    const allCareers = [];
+                    
+                    for (const code of riasecCodes) {
+                        const careers = await this.onetAPI.searchCareersByInterest(code, 5);
+                        allCareers.push(...careers.map(career => ({
+                            ...career,
+                            category: this.getCategoryFromRIASEC(code),
+                            salary: this.generateRandomSalary(),
+                            educationLevel: this.getRandomEducationLevel()
+                        })));
+                    }
+                    
+                    // Remove duplicates
+                    this.filteredCareers = Array.from(new Map(allCareers.map(item => [item.title, item])).values());
+                    
+                } catch (error) {
+                    console.error('Error loading careers:', error);
+                    this.filteredCareers = this.getSampleCareers();
+                }
+            }
+            
+            renderCareers() {
+                const container = document.getElementById('careers-container');
+                if (!container) return;
+                
+                const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+                const endIndex = startIndex + this.itemsPerPage;
+                const careersToShow = this.filteredCareers.slice(startIndex, endIndex);
+                
+                if (careersToShow.length === 0) {
+                    container.innerHTML = `
+                        <div class="col-12 text-center py-5">
+                            <i class="bi bi-search display-1 text-muted"></i>
+                            <h4 class="mt-3">No careers found</h4>
+                            <p class="text-muted">Try adjusting your search or filters</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                container.innerHTML = careersToShow.map(career => `
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card career-card h-100 shadow-sm">
+                            <div class="card-img-top bg-light text-center py-4">
+                                <i class="bi bi-${this.getCareerIcon(career.category)} display-4 text-primary"></i>
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">${career.title}</h5>
+                                <p class="card-text text-muted small">${career.description?.substring(0, 100) || 'Career information available'}...</p>
+                                
+                                <div class="d-flex justify-content-between align-items-center mt-3">
+                                    <div>
+                                        <span class="badge bg-success">$${career.salary?.toLocaleString() || 'N/A'}/yr</span>
+                                        <span class="badge bg-info ms-1">${career.educationLevel || 'Varies'}</span>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-primary" 
+                                            onclick="careersPage.showCareerDetails('${career.id || career.title}')">
+                                        Details
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                this.updatePagination();
+            }
+            
+            async showCareerDetails(careerId) {
+                const modal = new bootstrap.Modal(document.getElementById('careerDetailsModal'));
+                const titleElement = document.getElementById('careerModalTitle');
+                const contentElement = document.getElementById('career-modal-content');
+                
+                try {
+                    // Get career data from O*NET or fallback
+                    let careerData;
+                    if (careerId.includes('-')) { // SOC code format
+                        careerData = await this.onetAPI.getCareerData(careerId);
+                    } else {
+                        careerData = this.onetAPI.getFallbackCareerData(careerId);
+                    }
+                    
+                    titleElement.textContent = careerData.title;
+                    
+                    // Get job opportunities for this career
+                    const jobs = await this.jobMarket.fetchJobsByCareer(careerData.title, 'us', 5);
+                    
+                    contentElement.innerHTML = `
+                        <div>
+                            <h5>Description</h5>
+                            <p class="mb-4">${careerData.description || 'No description available.'}</p>
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    <h6>Required Skills</h6>
+                                    <div class="mb-3">
+                                        ${(careerData.skills || []).slice(0, 5).map(skill => `
+                                            <span class="badge bg-primary me-2 mb-2 p-2">${skill.name}</span>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Quick Facts</h6>
+                                    <div class="mb-2">
+                                        <strong>Median Salary:</strong> 
+                                        <span class="float-end text-success">$${careerData.salary?.median?.toLocaleString() || 'N/A'}</span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>Job Outlook:</strong>
+                                        <span class="float-end">
+                                            <span class="badge bg-${careerData.outlook?.trend === 'Growing' ? 'success' : 'warning'}">
+                                                ${careerData.outlook?.growth || 'N/A'}% Growth
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <strong>RIASEC Codes:</strong>
+                                        <span class="float-end">
+                                            ${(careerData.riasecCodes || []).map(code => `
+                                                <span class="badge bg-info me-1">${code}</span>
+                                            `).join('')}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <h6>Job Opportunities (${jobs.length})</h6>
+                            ${jobs.length > 0 ? `
+                                <div class="list-group mb-3">
+                                    ${jobs.slice(0, 3).map(job => `
+                                        <a href="${job.url || '#'}" target="_blank" class="list-group-item list-group-item-action">
+                                            <div class="d-flex w-100 justify-content-between">
+                                                <h6 class="mb-1">${job.title}</h6>
+                                                <small>${job.company}</small>
+                                            </div>
+                                            <p class="mb-1 small">${job.location}</p>
+                                            ${job.salary_min ? `
+                                                <small class="text-success">$${job.salary_min.toLocaleString()} - $${job.salary_max.toLocaleString()}</small>
+                                            ` : ''}
+                                        </a>
+                                    `).join('')}
+                                </div>
+                            ` : '<p class="text-muted">No current job openings found.</p>'}
+                            
+                            <div class="d-grid gap-2 mt-4">
+                                <button class="btn btn-primary" onclick="saveCareer('${careerId}')">
+                                    <i class="bi bi-bookmark me-2"></i>Save Career
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    
+                } catch (error) {
+                    console.error('Error loading career details:', error);
+                    contentElement.innerHTML = `
+                        <div class="text-center py-4">
+                            <i class="bi bi-exclamation-triangle display-1 text-warning"></i>
+                            <p class="mt-3">Unable to load career details</p>
+                            <p class="text-muted small">Please try again later</p>
+                        </div>
+                    `;
+                }
+                
+                modal.show();
+            }
+            
+            getSampleCareers() {
+                return [
+                    {
+                        id: '15-1252',
+                        title: 'Software Developer',
+                        description: 'Develop applications and systems software.',
+                        category: 'Technology',
+                        salary: 90000,
+                        educationLevel: "Bachelor's",
+                        riasecCodes: ['I', 'R', 'C']
+                    },
+                    {
+                        id: '29-1141',
+                        title: 'Registered Nurse',
+                        description: 'Provide and coordinate patient care.',
+                        category: 'Healthcare',
+                        salary: 75000,
+                        educationLevel: "Bachelor's",
+                        riasecCodes: ['S', 'I', 'C']
+                    }
+                ];
+            }
+            
+            getCareerIcon(category) {
+                const icons = {
+                    'Technology': 'laptop',
+                    'Healthcare': 'heart-pulse',
+                    'Business': 'graph-up',
+                    'Engineering': 'gear',
+                    'Education': 'book',
+                    'Arts': 'palette'
+                };
+                return icons[category] || 'briefcase';
+            }
+            
+            getCategoryFromRIASEC(code) {
+                const categories = {
+                    'R': 'Engineering',
+                    'I': 'Technology',
+                    'A': 'Arts',
+                    'S': 'Healthcare',
+                    'E': 'Business',
+                    'C': 'Business'
+                };
+                return categories[code] || 'General';
+            }
+            
+            generateRandomSalary() {
+                const salaries = [40000, 50000, 60000, 70000, 80000, 90000, 100000, 120000];
+                return salaries[Math.floor(Math.random() * salaries.length)];
+            }
+            
+            getRandomEducationLevel() {
+                const levels = ["High School", "Associate", "Bachelor's", "Master's", "Doctorate"];
+                return levels[Math.floor(Math.random() * levels.length)];
+            }
+            
+            updatePagination() {
+                const totalPages = Math.ceil(this.filteredCareers.length / this.itemsPerPage);
+                const pageInfo = document.getElementById('page-info');
+                const prevBtn = document.getElementById('prev-page');
+                const nextBtn = document.getElementById('next-page');
+                
+                if (pageInfo) {
+                    pageInfo.textContent = `Page ${this.currentPage} of ${totalPages}`;
+                }
+                
+                if (prevBtn) {
+                    prevBtn.disabled = this.currentPage === 1;
+                }
+                
+                if (nextBtn) {
+                    nextBtn.disabled = this.currentPage === totalPages || totalPages === 0;
+                }
+            }
+            
+            initEventListeners() {
+                // Search input
+                const searchInput = document.getElementById('career-search');
+                if (searchInput) {
+                    searchInput.addEventListener('input', (e) => {
+                        this.handleSearch(e.target.value);
+                    });
+                }
+                
+                // Filter buttons
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const filterType = e.target.dataset.filter;
+                        const filterValue = e.target.dataset.value;
+                        this.handleFilter(filterType, filterValue);
+                    });
+                });
+                
+                // Pagination
+                document.getElementById('prev-page')?.addEventListener('click', () => {
+                    this.currentPage--;
+                    this.renderCareers();
+                });
+                
+                document.getElementById('next-page')?.addEventListener('click', () => {
+                    this.currentPage++;
+                    this.renderCareers();
+                });
+                
+                // Clear filters
+                document.getElementById('clear-filters')?.addEventListener('click', () => {
+                    this.clearFilters();
+                });
+            }
+            
+            handleSearch(searchTerm) {
+                if (!searchTerm.trim()) {
+                    this.filteredCareers = [...this.allCareers || []];
+                } else {
+                    const term = searchTerm.toLowerCase();
+                    this.filteredCareers = (this.allCareers || []).filter(career => 
+                        career.title.toLowerCase().includes(term) ||
+                        career.description?.toLowerCase().includes(term)
+                    );
+                }
+                this.currentPage = 1;
+                this.renderCareers();
+            }
+            
+            handleFilter(type, value) {
+                // Implementation for filtering
+                console.log(`Filter by ${type}: ${value}`);
+            }
+            
+            clearFilters() {
+                this.currentFilters = {};
+                this.filteredCareers = [...this.allCareers || []];
+                this.currentPage = 1;
+                this.renderCareers();
+            }
+        }
+        
+        // Initialize careers page
+        let careersPage;
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.location.pathname.includes('careers.html')) {
+                careersPage = new CareersPageManager();
+                window.careersPage = careersPage;
+            }
         });
+        
+        // Global functions
+        function saveCareer(careerId) {
+            alert(`Career ${careerId} saved to your profile!`);
+        }
     </script>
 </body>
 </html>

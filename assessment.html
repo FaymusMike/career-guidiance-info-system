@@ -14,6 +14,9 @@
     <!-- Google Fonts CDN -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
     <!-- Custom CSS (Local) -->
     <link rel="stylesheet" href="css/custom.css">
     
@@ -79,105 +82,58 @@
         </div>
     </nav>
 
-    <!-- Assessment Header -->
-    <div class="container-fluid py-4 bg-light">
-        <div class="container">
-            <div class="text-center">
-                <h1 class="fw-bold">Career Assessment</h1>
-                <p class="lead text-muted">Discover careers that match your personality and interests</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Progress Bar -->
-    <div class="container py-3">
-        <div class="row">
-            <div class="col-12">
-                <div class="progress" style="height: 10px;">
-                    <div id="assessment-progress" class="progress-bar bg-primary" role="progressbar" style="width: 0%"></div>
-                </div>
-                <div class="d-flex justify-content-between mt-2">
-                    <small>Progress</small>
-                    <small><span id="current-question">0</span>/<span id="total-questions">0</span></small>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Assessment Content -->
+    <!-- Assessment Container -->
     <div class="container py-4">
         <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <!-- Instructions -->
-                <div class="card border-0 shadow-sm mb-4" id="instructions-card">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i>Assessment Instructions</h5>
-                    </div>
-                    <div class="card-body">
-                        <h5>RIASEC Career Assessment</h5>
-                        <p>This assessment is based on the Holland Codes (RIASEC) theory, which categorizes people and careers into six types:</p>
-                        
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-4">
-                                <div class="border rounded p-3 h-100">
-                                    <h6><span class="badge bg-danger me-2">R</span> Realistic</h6>
-                                    <p class="small mb-0">Practical, hands-on, technical</p>
-                                </div>
+            <div class="col-lg-10">
+                <!-- Assessment Header -->
+                <div class="text-center mb-5">
+                    <h1 class="fw-bold display-5">Career Assessment</h1>
+                    <p class="lead text-muted">Discover careers that match your personality, skills, and interests</p>
+                    <div class="row justify-content-center mt-4">
+                        <div class="col-md-8">
+                            <div class="alert alert-info">
+                                <h6><i class="bi bi-robot me-2"></i>AI-Powered Assessment</h6>
+                                <p class="mb-0 small">This assessment uses AI to generate personalized questions based on the RIASEC model.</p>
                             </div>
-                            <div class="col-md-4">
-                                <div class="border rounded p-3 h-100">
-                                    <h6><span class="badge bg-primary me-2">I</span> Investigative</h6>
-                                    <p class="small mb-0">Analytical, intellectual, scientific</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="border rounded p-3 h-100">
-                                    <h6><span class="badge bg-warning me-2">A</span> Artistic</h6>
-                                    <p class="small mb-0">Creative, expressive, original</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="border rounded p-3 h-100">
-                                    <h6><span class="badge bg-success me-2">S</span> Social</h6>
-                                    <p class="small mb-0">Helping, teaching, caring</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="border rounded p-3 h-100">
-                                    <h6><span class="badge bg-info me-2">E</span> Enterprising</h6>
-                                    <p class="small mb-0">Leadership, persuasive, managerial</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="border rounded p-3 h-100">
-                                    <h6><span class="badge bg-secondary me-2">C</span> Conventional</h6>
-                                    <p class="small mb-0">Organized, detail-oriented, systematic</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="alert alert-info">
-                            <h6><i class="bi bi-lightbulb me-2"></i>How it works:</h6>
-                            <ul class="mb-0">
-                                <li>You will answer 30 questions about your interests and preferences</li>
-                                <li>Answer honestly based on what you enjoy, not what you think you should</li>
-                                <li>There are no right or wrong answers</li>
-                                <li>Your answers will be used to match you with suitable careers</li>
-                            </ul>
-                        </div>
-                        
-                        <div class="d-grid">
-                            <button id="start-assessment" class="btn btn-primary btn-lg">
-                                <i class="bi bi-play-circle me-2"></i>Start Assessment
-                            </button>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Question Container -->
-                <div id="question-container" style="display: none;">
-                    <!-- Questions will be loaded here -->
+                <!-- Progress Bar -->
+                <div class="mb-4">
+                    <div class="progress" style="height: 10px;">
+                        <div id="assessment-progress" class="progress-bar bg-primary" role="progressbar" style="width: 0%"></div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-2">
+                        <small>Progress</small>
+                        <small><span id="current-question">0</span>/<span id="total-questions">30</span></small>
+                    </div>
                 </div>
+                
+                <!-- Assessment Container -->
+                <div id="question-container">
+                    <!-- Initial State -->
+                    <div class="card border-0 shadow-lg">
+                        <div class="card-body text-center p-5">
+                            <i class="bi bi-clipboard-data display-1 text-primary mb-4"></i>
+                            <h3>Ready to Discover Your Career Path?</h3>
+                            <p class="text-muted mb-4">
+                                This assessment will help identify careers that match your interests and personality.
+                                Answer honestly for the most accurate results.
+                            </p>
+                            <button class="btn btn-primary btn-lg" onclick="startAssessment()">
+                                <i class="bi bi-play-circle me-2"></i>Start Assessment
+                            </button>
+                            <div class="mt-4">
+                                <small class="text-muted">Approx. 10-15 minutes • 30 questions • Free</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- O*NET Attribution -->
+                <div id="assessment-attribution" class="mt-4"></div>
             </div>
         </div>
     </div>
@@ -203,36 +159,134 @@
     <!-- Firebase and App Scripts -->
     <script src="js/firebase-config.js"></script>
     <script src="js/auth.js"></script>
+    <script src="js/main.js"></script>
     <script src="js/assessment.js"></script>
     
     <script>
-        // Start assessment button
-        document.getElementById('start-assessment').addEventListener('click', function() {
-            document.getElementById('instructions-card').style.display = 'none';
-            document.getElementById('question-container').style.display = 'block';
+        // Start assessment function
+        function startAssessment() {
+            if (!AppState.currentUser) {
+                window.location.href = 'auth.html?redirect=assessment';
+                return;
+            }
             
-            // Initialize assessment manager
-            if (typeof AssessmentManager === 'function') {
-                new AssessmentManager();
+            // Check if assessment engine is loaded
+            if (window.assessmentEngine) {
+                window.assessmentEngine.renderQuestion();
+            } else {
+                // Initialize assessment engine
+                window.assessmentEngine = new AIEnhancedAssessment();
+                window.assessmentEngine.renderQuestion();
+            }
+        }
+        
+        // Check if returning to view results
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const resultId = urlParams.get('result');
+            
+            if (resultId) {
+                // Load specific assessment result
+                loadAssessmentResult(resultId);
             }
         });
         
-        // Check authentication for assessment
-        document.addEventListener('DOMContentLoaded', function() {
-            if (!AppState.currentUser) {
-                // Show login prompt
-                const instructionsCard = document.getElementById('instructions-card');
-                if (instructionsCard) {
-                    const startBtn = document.getElementById('start-assessment');
-                    startBtn.innerHTML = '<i class="bi bi-box-arrow-in-right me-2"></i>Login to Start Assessment';
-                    startBtn.classList.remove('btn-primary');
-                    startBtn.classList.add('btn-warning');
-                    startBtn.onclick = function() {
-                        window.location.href = 'auth.html';
-                    };
+        async function loadAssessmentResult(resultId) {
+            try {
+                const resultDoc = await FirebaseServices.db.collection('assessment_results').doc(resultId).get();
+                if (resultDoc.exists) {
+                    const result = resultDoc.data();
+                    
+                    // Show results view
+                    document.getElementById('question-container').innerHTML = `
+                        <div class="card border-0 shadow-lg">
+                            <div class="card-header bg-success text-white">
+                                <h4 class="mb-0"><i class="bi bi-trophy me-2"></i>Assessment Results</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-lg-7">
+                                        <h5>Your RIASEC Profile</h5>
+                                        <div class="chart-container" style="height: 300px;">
+                                            <canvas id="results-chart"></canvas>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-5">
+                                        <h5>Top Categories</h5>
+                                        ${Object.entries(result.scores || {})
+                                            .sort((a, b) => b[1] - a[1])
+                                            .slice(0, 3)
+                                            .map(([category, score]) => `
+                                                <div class="mb-3">
+                                                    <div class="d-flex justify-content-between mb-1">
+                                                        <strong>${getCategoryName(category)}</strong>
+                                                        <span>${score}%</span>
+                                                    </div>
+                                                    <div class="progress" style="height: 20px;">
+                                                        <div class="progress-bar bg-primary" style="width: ${score}%"></div>
+                                                    </div>
+                                                </div>
+                                            `).join('')}
+                                        <div class="d-grid gap-2 mt-4">
+                                            <a href="careers.html" class="btn btn-primary">
+                                                <i class="bi bi-search me-2"></i>Explore Careers
+                                            </a>
+                                            <a href="dashboard.html" class="btn btn-outline-primary">
+                                                <i class="bi bi-speedometer2 me-2"></i>Back to Dashboard
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Initialize chart
+                    initResultsChart(result.scores);
                 }
+            } catch (error) {
+                console.error('Error loading assessment result:', error);
             }
-        });
+        }
+        
+        function getCategoryName(code) {
+            const names = {
+                'R': 'Realistic', 'I': 'Investigative', 'A': 'Artistic',
+                'S': 'Social', 'E': 'Enterprising', 'C': 'Conventional'
+            };
+            return names[code] || code;
+        }
+        
+        function initResultsChart(scores) {
+            const ctx = document.getElementById('results-chart');
+            if (!ctx || !scores) return;
+            
+            new Chart(ctx.getContext('2d'), {
+                type: 'radar',
+                data: {
+                    labels: ['Realistic', 'Investigative', 'Artistic', 'Social', 'Enterprising', 'Conventional'],
+                    datasets: [{
+                        label: 'Your Scores',
+                        data: Object.values(scores),
+                        fill: true,
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgb(54, 162, 235)',
+                        pointBackgroundColor: 'rgb(54, 162, 235)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(54, 162, 235)'
+                    }]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            suggestedMin: 0,
+                            suggestedMax: 100
+                        }
+                    }
+                }
+            });
+        }
     </script>
 </body>
 </html>
