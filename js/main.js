@@ -7,6 +7,7 @@ const AppConfig = {
     // Using only client-side compatible APIs
     ADZUNA_APP_ID: '33ad0b83',
     ADZUNA_APP_KEY: 'b2b03ba1fac65347141fa0fe19b58640',
+    ADZUNA_PROXY_URL: '', // Optional backend proxy URL to avoid CORS/rate limits in production browsers
     GNEWS_API_KEY: '5a01429d28b5c10f5eb820ecfd75d67e',
     
     // Cache Settings
@@ -655,7 +656,8 @@ class JobMarketManager {
             ADZUNA: {
                 baseURL: 'https://api.adzuna.com/v1/api/jobs',
                 appId: AppConfig.ADZUNA_APP_ID,
-                appKey: AppConfig.ADZUNA_APP_KEY
+                appKey: AppConfig.ADZUNA_APP_KEY,
+                proxyURL: AppConfig.ADZUNA_PROXY_URL
             }
         };
         this.cache = new Map();
@@ -754,6 +756,15 @@ class JobMarketManager {
 
         let jobs = [];
         
+        if (!this.canUseDirectAdzunaRequest() && !this.config.ADZUNA.proxyURL) {
+            jobs = this.getSampleJobs(careerTitle, limit);
+            this.cache.set(cacheKey, {
+                data: jobs,
+                timestamp: Date.now()
+            });
+            return jobs;
+        }
+
         try {
             // Try Adzuna API (works in browser)
             jobs = await this.fetchAdzunaJobs(careerTitle, location, limit);
@@ -771,8 +782,15 @@ class JobMarketManager {
         return jobs;
     }
 
+    canUseDirectAdzunaRequest() {
+        const hostname = window.location.hostname;
+        return hostname === 'localhost' || hostname === '127.0.0.1';
+    }
+
     async fetchAdzunaJobs(careerTitle, location, limit) {
-        const url = `${this.config.ADZUNA.baseURL}/${location}/search/1?` +
+        const baseURL = this.config.ADZUNA.proxyURL || `${this.config.ADZUNA.baseURL}/${location}/search/1`;
+        const separator = baseURL.includes('?') ? '&' : '?';
+        const url = `${baseURL}${separator}` +
             `app_id=${this.config.ADZUNA.appId}&` +
             `app_key=${this.config.ADZUNA.appKey}&` +
             `what=${encodeURIComponent(careerTitle)}&` +
@@ -1056,7 +1074,7 @@ class DashboardManager {
                                     <i class="bi bi-briefcase me-1"></i> ${data.totalJobs} jobs
                                 </div>
                                 <div class="col-6 text-end">
-                                    <i class="bi bi-cash-coin me-1"></i> $${data.averageSalary.toLocaleString()}
+                                    <i class="bi bi-cash-coin me-1"></i> ₦${data.averageSalary.toLocaleString()}
                                 </div>
                             </div>
                             <div class="small text-muted mt-1">

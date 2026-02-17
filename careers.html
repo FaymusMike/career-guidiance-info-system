@@ -378,6 +378,14 @@
                 }
             }
             
+            formatCurrency(value) {
+                if (value === null || value === undefined || Number.isNaN(Number(value))) {
+                    return 'N/A';
+                }
+
+                return `₦${Number(value).toLocaleString()}`;
+            }
+
             async loadCareers() {
                 try {
                     // Load sample careers from O*NET
@@ -436,7 +444,7 @@
                                 
                                 <div class="d-flex justify-content-between align-items-center mt-3">
                                     <div>
-                                        <span class="badge bg-success">$${career.salary?.toLocaleString() || 'N/A'}/yr</span>
+                                        <span class="badge bg-success">${this.formatCurrency(career.salary)}/yr</span>
                                         <span class="badge bg-info ms-1">${career.educationLevel || 'Varies'}</span>
                                     </div>
                                     <button class="btn btn-sm btn-outline-primary" 
@@ -489,7 +497,7 @@
                                     <h6>Quick Facts</h6>
                                     <div class="mb-2">
                                         <strong>Median Salary:</strong> 
-                                        <span class="float-end text-success">$${careerData.salary?.median?.toLocaleString() || 'N/A'}</span>
+                                        <span class="float-end text-success">${this.formatCurrency(careerData.salary?.median)}</span>
                                     </div>
                                     <div class="mb-2">
                                         <strong>Job Outlook:</strong>
@@ -521,7 +529,7 @@
                                             </div>
                                             <p class="mb-1 small">${job.location}</p>
                                             ${job.salary_min ? `
-                                                <small class="text-success">$${job.salary_min.toLocaleString()} - $${job.salary_max.toLocaleString()}</small>
+                                                <small class="text-success">${this.formatCurrency(job.salary_min)} - ${this.formatCurrency(job.salary_max)}</small>
                                             ` : ''}
                                         </a>
                                     `).join('')}
@@ -567,7 +575,7 @@
                             <p class="mb-1 small text-muted">${job.company} • ${job.location}</p>
                             <p class="mb-2 small text-muted">${(job.description || '').substring(0, 100)}...</p>
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="badge bg-success">${job.salary_min ? `$${job.salary_min.toLocaleString()} - $${job.salary_max.toLocaleString()}` : 'Salary N/A'}</span>
+                                <span class="badge bg-success">${job.salary_min ? `${this.formatCurrency(job.salary_min)} - ${this.formatCurrency(job.salary_max)}` : 'Salary N/A'}</span>
                                 ${job.url ? `<a href="${job.url}" target="_blank" class="btn btn-sm btn-outline-primary">Apply</a>` : '<span class="small text-muted">Sample listing</span>'}
                             </div>
                         </div>
@@ -594,7 +602,7 @@
                             </div>
                             <div class="small text-muted">
                                 <div><strong>Open Roles:</strong> ${trend.totalJobs.toLocaleString()}</div>
-                                <div><strong>Average Salary:</strong> $${trend.averageSalary.toLocaleString()}</div>
+                                <div><strong>Average Salary:</strong> ${this.formatCurrency(trend.averageSalary)}</div>
                                 <div><strong>Remote Share:</strong> ${trend.remotePercentage}%</div>
                             </div>
                         </div>
