@@ -30,6 +30,21 @@ class AuthManager {
         }
     }
     
+    
+    getPostAuthRedirect() {
+        const params = new URLSearchParams(window.location.search);
+        const redirect = params.get('redirect');
+        const allowedRedirects = {
+            dashboard: 'dashboard.html',
+            assessment: 'assessment.html',
+            profile: 'profile.html',
+            careers: 'careers.html',
+            admin: 'admin.html'
+        };
+
+        return allowedRedirects[redirect] || 'dashboard.html';
+    }
+
     async handleSignup(e) {
         e.preventDefault();
         
@@ -74,8 +89,9 @@ class AuthManager {
             this.showAlert('Account created successfully! Redirecting...', 'success');
             
             // Auto-login and redirect
+            const target = this.getPostAuthRedirect();
             setTimeout(() => {
-                window.location.href = 'dashboard.html';
+                window.location.href = target;
             }, 2000);
             
         } catch (error) {
@@ -99,8 +115,9 @@ class AuthManager {
             await FirebaseServices.auth.signInWithEmailAndPassword(email, password);
             this.showAlert('Login successful! Redirecting...', 'success');
             
+            const target = this.getPostAuthRedirect();
             setTimeout(() => {
-                window.location.href = 'dashboard.html';
+                window.location.href = target;
             }, 1500);
             
         } catch (error) {
@@ -116,8 +133,9 @@ class AuthManager {
             
             this.showAlert('Google Sign-In successful! Redirecting...', 'success');
             
+            const target = this.getPostAuthRedirect();
             setTimeout(() => {
-                window.location.href = 'dashboard.html';
+                window.location.href = target;
             }, 1500);
             
         } catch (error) {

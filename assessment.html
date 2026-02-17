@@ -170,13 +170,11 @@
                 return;
             }
             
-            // Check if assessment engine is loaded
-            if (window.assessmentEngine) {
-                window.assessmentEngine.renderQuestion();
+            if (typeof initializeAssessment === 'function') {
+                initializeAssessment();
+                
             } else {
-                // Initialize assessment engine
-                window.assessmentEngine = new AIEnhancedAssessment();
-                window.assessmentEngine.renderQuestion();
+                console.error('Assessment initializer is not available.');
             }
         }
         

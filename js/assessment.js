@@ -56,16 +56,17 @@ document.addEventListener('DOMContentLoaded', function() {
     if (window.location.pathname.includes('assessment.html')) {
         const urlParams = new URLSearchParams(window.location.search);
         const resultId = urlParams.get('result');
-        
+
         if (resultId) {
             // Show results page
             loadAssessmentResult(resultId);
-        } else {
-            // Show new assessment
-            initializeAssessment();
         }
     }
 });
+
+function getAssessmentContainer() {
+    return document.getElementById('assessment-container') || document.getElementById('question-container');
+}
 
 function initializeAssessment() {
     AssessmentState.questions = RIASECQuestions;
@@ -77,7 +78,7 @@ function initializeAssessment() {
 }
 
 function renderQuestion() {
-    const container = document.getElementById('assessment-container');
+    const container = getAssessmentContainer();
     if (!container) return;
 
     const q = AssessmentState.questions[AssessmentState.currentQuestion];
@@ -317,7 +318,7 @@ function generateCareerRecommendations(scores) {
 }
 
 function displayResults(results) {
-    const container = document.getElementById('assessment-container');
+    const container = getAssessmentContainer();
     if (!container) return;
     
     const scores = results.scores;
@@ -497,3 +498,6 @@ window.nextQuestion = nextQuestion;
 window.previousQuestion = previousQuestion;
 window.startNewAssessment = startNewAssessment;
 window.viewCareer = viewCareer;
+
+// expose initializer for pages that use a start button
+window.initializeAssessment = initializeAssessment;
