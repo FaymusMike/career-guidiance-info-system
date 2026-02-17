@@ -1321,11 +1321,53 @@ class CareerGuidanceApp {
     }
 }
 
+
+
+// Compatibility wrapper for legacy pages that expect OnetAPIManager
+class OnetAPIManager {
+    constructor() {
+        this.careerManager = new CareerDataManager();
+    }
+
+    async searchCareersByInterest(code, limit = 5) {
+        return this.careerManager.searchCareersByInterest(code, limit);
+    }
+
+    async getCareerData(careerId) {
+        return this.careerManager.getCareerData(careerId);
+    }
+
+    getFallbackCareerData(careerTitle) {
+        const careers = Object.values(this.careerManager.careers);
+        const match = careers.find(c => c.title.toLowerCase() === String(careerTitle).toLowerCase());
+
+        if (match) return match;
+
+        return {
+            id: 'custom-career',
+            title: careerTitle,
+            description: 'Career information is currently limited for this role. Explore related opportunities and required skills.',
+            skills: [
+                { name: 'Communication' },
+                { name: 'Problem Solving' },
+                { name: 'Teamwork' }
+            ],
+            salary: { median: null },
+            outlook: { growth: 'N/A', trend: 'Stable' },
+            riasecCodes: []
+        };
+    }
+}
+
 // ============================================
 // 7. INITIALIZATION
 // ============================================
 
 // Global functions
+window.OnetAPIManager = OnetAPIManager;
+window.JobMarketManager = JobMarketManager;
+window.CareerDataManager = CareerDataManager;
+
 window.viewCareerDetails = (id) => {
     window.location.href = `careers.html?id=${id}`;
 };

@@ -362,7 +362,11 @@
             }
             
             async init() {
-                await this.loadCareers();
+                await Promise.all([
+                    this.loadCareers(),
+                    this.loadJobOpportunities(),
+                    this.loadMarketTrends()
+                ]);
                 this.initEventListeners();
                 this.renderCareers();
                 
@@ -391,11 +395,13 @@
                     }
                     
                     // Remove duplicates
-                    this.filteredCareers = Array.from(new Map(allCareers.map(item => [item.title, item])).values());
-                    
+                    this.allCareers = Array.from(new Map(allCareers.map(item => [item.title, item])).values());
+                    this.filteredCareers = [...this.allCareers];
+
                 } catch (error) {
                     console.error('Error loading careers:', error);
-                    this.filteredCareers = this.getSampleCareers();
+                    this.allCareers = this.getSampleCareers();
+                    this.filteredCareers = [...this.allCareers];
                 }
             }
             
@@ -544,6 +550,61 @@
                 modal.show();
             }
             
+            async loadJobOpportunities() {
+                const container = document.getElementById('jobs-container');
+                if (!container) return;
+
+                try {
+                    const careers = ['Software Developer', 'Registered Nurse', 'Marketing Manager'];
+                    const jobsByCareer = await Promise.all(
+                        careers.map(career => this.jobMarket.fetchJobsByCareer(career, 'us', 2))
+                    );
+                    const jobs = jobsByCareer.flat().slice(0, 6);
+
+                    container.innerHTML = jobs.length ? jobs.map(job => `
+                        <div class="border rounded p-3 mb-3">
+                            <h6 class="mb-1">${job.title}</h6>
+                            <p class="mb-1 small text-muted">${job.company} • ${job.location}</p>
+                            <p class="mb-2 small text-muted">${(job.description || '').substring(0, 100)}...</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="badge bg-success">${job.salary_min ? `$${job.salary_min.toLocaleString()} - $${job.salary_max.toLocaleString()}` : 'Salary N/A'}</span>
+                                ${job.url ? `<a href="${job.url}" target="_blank" class="btn btn-sm btn-outline-primary">Apply</a>` : '<span class="small text-muted">Sample listing</span>'}
+                            </div>
+                        </div>
+                    `).join('') : '<p class="text-muted mb-0">No current job opportunities available.</p>';
+                } catch (error) {
+                    console.error('Error loading job opportunities:', error);
+                    container.innerHTML = '<p class="text-muted mb-0">Unable to load job opportunities right now.</p>';
+                }
+            }
+
+            async loadMarketTrends() {
+                const container = document.getElementById('trends-container');
+                if (!container) return;
+
+                try {
+                    const fields = ['Software Developer', 'Registered Nurse', 'Financial Manager'];
+                    const trends = await Promise.all(fields.map(field => this.jobMarket.getJobMarketTrends(field)));
+
+                    container.innerHTML = trends.map((trend, index) => `
+                        <div class="border rounded p-3 mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="mb-0">${fields[index]}</h6>
+                                <span class="badge bg-${trend.demandLevel === 'High' ? 'success' : trend.demandLevel === 'Medium' ? 'warning' : 'secondary'}">${trend.demandLevel} Demand</span>
+                            </div>
+                            <div class="small text-muted">
+                                <div><strong>Open Roles:</strong> ${trend.totalJobs.toLocaleString()}</div>
+                                <div><strong>Average Salary:</strong> $${trend.averageSalary.toLocaleString()}</div>
+                                <div><strong>Remote Share:</strong> ${trend.remotePercentage}%</div>
+                            </div>
+                        </div>
+                    `).join('');
+                } catch (error) {
+                    console.error('Error loading market trends:', error);
+                    container.innerHTML = '<p class="text-muted mb-0">Unable to load market trends right now.</p>';
+                }
+            }
+
             getSampleCareers() {
                 return [
                     {

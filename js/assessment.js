@@ -5,7 +5,7 @@
 // Assessment State
 const AssessmentState = {
     currentQuestion: 0,
-    answers: {},
+    answers: [],
     questions: [],
     results: null,
     completed: false
@@ -71,10 +71,33 @@ function getAssessmentContainer() {
 function initializeAssessment() {
     AssessmentState.questions = RIASECQuestions;
     AssessmentState.currentQuestion = 0;
-    AssessmentState.answers = {};
+    AssessmentState.answers = [];
+    AssessmentState.completed = false;
+    AssessmentState.results = null;
     
     renderQuestion();
     updateProgress();
+}
+
+
+function updateProgress() {
+    const totalQuestions = AssessmentState.questions.length || RIASECQuestions.length;
+    const currentQuestion = AssessmentState.currentQuestion + 1;
+
+    const progressBar = document.getElementById('assessment-progress');
+    if (progressBar) {
+        progressBar.style.width = `${(currentQuestion / totalQuestions) * 100}%`;
+    }
+
+    const currentQuestionEl = document.getElementById('current-question');
+    if (currentQuestionEl) {
+        currentQuestionEl.textContent = currentQuestion.toString();
+    }
+
+    const totalQuestionsEl = document.getElementById('total-questions');
+    if (totalQuestionsEl) {
+        totalQuestionsEl.textContent = totalQuestions.toString();
+    }
 }
 
 function renderQuestion() {
@@ -153,6 +176,8 @@ function renderQuestion() {
         </div>
     `;
 
+     updateProgress();
+
     // Highlight selected option if exists
     if (AssessmentState.answers[AssessmentState.currentQuestion]) {
         const selected = AssessmentState.answers[AssessmentState.currentQuestion];
@@ -222,9 +247,9 @@ function calculateResults() {
     };
     
     // Sum up scores for each type
-    AssessmentState.answers.forEach((score, index) => {
-        const type = AssessmentState.questions[index].type;
-        scores[type] += score * 20; // Convert 1-5 scale to 20-100
+      AssessmentState.questions.forEach((question, index) => {
+        const score = AssessmentState.answers[index] || 0;
+        scores[question.type] += score * 20; // Convert 1-5 scale to 20-100
     });
     
     // Average scores (divide by number of questions per type - 4)
