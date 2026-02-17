@@ -246,14 +246,32 @@
         // Profile management functions
         let profileData = {};
         
+        async function waitForAuthenticatedUser(timeoutMs = 6000) {
+            if (AppState.currentUser) {
+                return AppState.currentUser;
+            }
+
+            return new Promise((resolve) => {
+                const timeoutId = setTimeout(() => resolve(null), timeoutMs);
+                const unsubscribe = FirebaseServices.auth.onAuthStateChanged((user) => {
+                    if (user) {
+                        clearTimeout(timeoutId);
+                        unsubscribe();
+                        resolve(user);
+                    }
+                });
+            });
+        }
+
         async function loadProfileData() {
-            if (!AppState.currentUser) {
-                window.location.href = 'auth.html';
+            const user = await waitForAuthenticatedUser();
+            if (!user) {
+                window.location.href = 'auth.html?redirect=profile';
                 return;
             }
             
             try {
-                const userDoc = await FirebaseServices.db.collection('users').doc(AppState.currentUser.uid).get();
+                const userDoc = await FirebaseServices.db.collection('users').doc(user.uid).get();
                 
                 if (userDoc.exists) {
                     profileData = userDoc.data();
@@ -274,7 +292,7 @@
                     await loadAssessmentHistory();
                     
                     // Update counts
-                    updateProfileCounts();
+                    updateProfileCounts(user);
                 }
             } catch (error) {
                 console.error('Error loading profile:', error);
@@ -346,12 +364,12 @@
             }
         }
         
-        async function updateProfileCounts() {
+        async function updateProfileCounts(user) {
             try {
                 // Count assessments
                 const assessmentsSnapshot = await FirebaseServices.db
                     .collection('results')
-                    .where('userId', '==', AppState.currentUser.uid)
+                    .where('userId', '==', user.uid)
                     .get();
                 
                 document.getElementById('assessments-count').textContent = assessmentsSnapshot.size;

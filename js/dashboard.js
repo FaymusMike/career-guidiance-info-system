@@ -2,10 +2,16 @@
 // DASHBOARD.JS - Complete Dashboard Functionality
 // ============================================
 
-class DashboardManager {
+class DashboardPageManager {
     constructor() {
         this.cache = new Map();
         this.initialized = false;
+        this.interestChart = null;
+        this.categoryChart = null;
+        this.config = {
+            ADZUNA_APP_ID: '33ad0b83',
+            ADZUNA_APP_KEY: 'b2b03ba1fac65347141fa0fe19b58640'
+        };
     }
 
     async initializeDashboard() {
@@ -21,7 +27,11 @@ class DashboardManager {
                 this.loadJobMarketData(),
                 this.loadCareerNews(),
                 this.loadSavedCareers(),
-                this.loadAssessmentHistory()
+                this.loadAssessmentHistory(),
+                this.loadInterestProfile(),
+                this.loadRecentAssessmentsSection(),
+                this.loadRecommendedCareersSection(),
+                this.loadCategoryDistribution()
             ]);
             
             this.initialized = true;
@@ -186,8 +196,8 @@ class DashboardManager {
             try {
                 // Fetch from Adzuna API
                 const url = `https://api.adzuna.com/v1/api/jobs/us/search/1?` +
-                    `app_id=${AppConfig.ADZUNA_APP_ID}&` +
-                    `app_key=${AppConfig.ADZUNA_APP_KEY}&` +
+                    `app_id=${this.config.ADZUNA_APP_ID}&` +
+                    `app_key=${this.config.ADZUNA_APP_KEY}&` +
                     `what=${encodeURIComponent(field)}&` +
                     `results_per_page=10`;
                 
@@ -426,6 +436,158 @@ class DashboardManager {
         }
     }
 
+    getLatestScores() {
+        const latestResult = JSON.parse(localStorage.getItem('latestResult') || 'null');
+        return latestResult?.scores || {
+            R: 60,
+            I: 75,
+            A: 55,
+            S: 70,
+            E: 68,
+            C: 62
+        };
+    }
+
+    async loadInterestProfile() {
+        const chartCanvas = document.getElementById('interest-chart');
+        if (!chartCanvas || typeof Chart === 'undefined') return;
+
+        const scores = this.getLatestScores();
+        const labels = ['R', 'I', 'A', 'S', 'E', 'C'];
+        const values = labels.map(label => Number(scores[label] || 0));
+
+        if (this.interestChart) {
+            this.interestChart.destroy();
+        }
+
+        this.interestChart = new Chart(chartCanvas, {
+            type: 'radar',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'RIASEC Scores',
+                    data: values,
+                    backgroundColor: 'rgba(13, 110, 253, 0.2)',
+                    borderColor: '#0d6efd',
+                    borderWidth: 2,
+                    pointBackgroundColor: '#0d6efd'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        min: 0,
+                        max: 100,
+                        ticks: { stepSize: 20 }
+                    }
+                }
+            }
+        });
+    }
+
+    async loadRecentAssessmentsSection() {
+        const container = document.getElementById('recent-assessments');
+        if (!container) return;
+
+        const history = JSON.parse(localStorage.getItem('assessmentHistory') || '[]');
+        const latestResult = JSON.parse(localStorage.getItem('latestResult') || 'null');
+
+        const assessments = [...history];
+        if (latestResult?.completedAt) {
+            assessments.unshift({ id: 'latest', ...latestResult });
+        }
+
+        const topThree = assessments.slice(0, 3);
+        if (topThree.length === 0) {
+            container.innerHTML = `
+                <div class="col-12 text-center py-4">
+                    <p class="text-muted mb-0">No assessments yet. Take one to see results here.</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = topThree.map((assessment, index) => {
+            const date = assessment.completedAt ? new Date(assessment.completedAt) : new Date();
+            return `
+                <div class="col-12">
+                    <div class="border rounded p-3 d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="mb-1">Assessment ${index + 1}</h6>
+                            <small class="text-muted">${date.toLocaleDateString()}</small>
+                        </div>
+                        <a href="assessment.html" class="btn btn-sm btn-outline-primary">View</a>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    async loadRecommendedCareersSection() {
+        const container = document.getElementById('recommended-careers');
+        if (!container) return;
+
+        const latestResult = JSON.parse(localStorage.getItem('latestResult') || 'null');
+        const recommendations = latestResult?.recommendations?.slice(0, 3) || [
+            { title: 'Software Developer', matchScore: 85, category: 'Technology' },
+            { title: 'Data Analyst', matchScore: 78, category: 'Business' },
+            { title: 'UX Designer', matchScore: 72, category: 'Creative' }
+        ];
+
+        container.innerHTML = recommendations.map(career => `
+            <div class="col-12">
+                <div class="border rounded p-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0">${career.title}</h6>
+                        <span class="badge bg-success">${career.matchScore || 70}%</span>
+                    </div>
+                    <small class="text-muted">${career.category || 'General'}</small>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    async loadCategoryDistribution() {
+        const chartCanvas = document.getElementById('category-chart');
+        if (!chartCanvas || typeof Chart === 'undefined') return;
+
+        const latestResult = JSON.parse(localStorage.getItem('latestResult') || 'null');
+        const recommendations = latestResult?.recommendations || [];
+
+        const categories = recommendations.reduce((acc, item) => {
+            const category = item.category || 'Other';
+            acc[category] = (acc[category] || 0) + 1;
+            return acc;
+        }, {});
+
+        if (Object.keys(categories).length === 0) {
+            categories.Technology = 2;
+            categories.Business = 1;
+            categories.Creative = 1;
+        }
+
+        if (this.categoryChart) {
+            this.categoryChart.destroy();
+        }
+
+        this.categoryChart = new Chart(chartCanvas, {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(categories),
+                datasets: [{
+                    data: Object.values(categories),
+                    backgroundColor: ['#0d6efd', '#20c997', '#ffc107', '#dc3545', '#6f42c1']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    }
+
     showLoadingState() {
         const loading = document.getElementById('dashboard-loading');
         if (loading) loading.style.display = 'block';
@@ -453,7 +615,7 @@ class DashboardManager {
 // Initialize dashboard
 document.addEventListener('DOMContentLoaded', function() {
     if (window.location.pathname.includes('dashboard.html')) {
-        window.dashboard = new DashboardManager();
+        window.dashboard = new DashboardPageManager();
         window.dashboard.initializeDashboard();
     }
 });
