@@ -7,6 +7,7 @@ const AppConfig = {
     // Using only client-side compatible APIs
     ADZUNA_APP_ID: '33ad0b83',
     ADZUNA_APP_KEY: 'b2b03ba1fac65347141fa0fe19b58640',
+    GNEWS_API_KEY: '5a01429d28b5c10f5eb820ecfd75d67e',
     
     // Cache Settings
     CACHE_TTL: {

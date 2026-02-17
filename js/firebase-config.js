@@ -26,13 +26,14 @@ const FirebaseServices = {
     firebase: firebase
 };
 
-// Global state management
-const AppState = {
+// Global state management (single shared object across scripts)
+window.AppState = window.AppState || {
     currentUser: null,
     userProfile: null,
     isAdmin: false,
     theme: 'light'
 };
+const AppState = window.AppState;
 
 // Initialize app state
 function initializeAppState() {

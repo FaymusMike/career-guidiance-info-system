@@ -295,6 +295,10 @@ class DashboardManager {
 
     async fetchRealNews() {
         try {
+            if (!window.AppConfig || !AppConfig.GNEWS_API_KEY) {
+                return this.getFallbackNews();
+            }
+            
             // Try to get real news from GNews API
             const url = `https://gnews.io/api/v4/search?q=career%20OR%20jobs%20OR%20employment&lang=en&max=4&apikey=${AppConfig.GNEWS_API_KEY}`;
             
@@ -318,6 +322,10 @@ class DashboardManager {
         }
         
         // Fallback news
+        return this.getFallbackNews();
+    }
+
+    getFallbackNews() {
         return [
             {
                 title: 'Tech Hiring Surges in Q2 2024',
